@@ -1,0 +1,320 @@
+<apex:page showHeader="false" sidebar="false" renderAs="pdf" standardStylesheets="false" applyHtmlTag="false" standardController="Opportunity" extensions="OpportunityInvoiceController">
+
+    <head>
+        <style>
+            body {
+                font-family: sans-serif;
+                font-size: 14px;
+                position: relative;
+            }
+            
+            h1,
+            h2,
+            h3,
+            h4,
+            h5 {
+                margin: 0;
+            }
+            
+            h1 {
+                font-size: 18px;
+            }
+            
+            h2 {
+                font-size: 16px;
+            }
+            
+            h3 {
+                font-size: 14px;
+            }
+            
+            p,
+            td {
+                font-size: 12px;
+            }
+            
+            .invoice__header {
+                display: inline-block;
+                width: 100%;
+                margin: 0px 0 10px 0;
+            }
+            
+            .invoice__logo {
+                width: 300px;
+            }
+            
+            .invoice__title {
+                float: left;
+                width: 80%;
+            }
+            
+            .invoice__number {
+                float: left;
+                width: 20%;
+                text-align: right;
+            }
+            
+            .invoice__number span {
+                display: block;
+            }
+            
+            .invoice__address {
+                width: 50%;
+                float: left;
+            }
+            
+            .invoice__address h3 {
+                margin-bottom: 5px;
+            }
+            
+            .invoice__address span {
+                display: block;
+            }
+            
+            .invoice__address--left {
+                text-align: left;
+                width: 60%;
+            }
+            
+            .invoice__address--right {
+                text-align: right;
+                width: 40%;
+            }
+            
+            .invoice__memo,
+            .invoice__oli {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                float: left;
+                width: 100%;
+            }
+            
+            .invoice__memo {
+                width: 50%;
+            }
+            
+            .memo__header,
+            .oli__header {
+                padding: 10px 15px;
+                border-bottom: 1px solid #ddd;
+                border-top-right-radius: 3px;
+                border-top-left-radius: 3px;
+                background-color: #f2f8fc;
+                border-color: #ddd;
+            }
+            
+            .memo__content {
+                padding: 10px 15px;
+                min-height: 50px;
+            }
+            
+            table {
+                padding: 10px 15px;
+                width: 100%;
+            }
+            
+            .oli__footer {
+                border-top: 1px solid #ddd;
+                background-color: #f2f8fc;
+            }
+            
+            .oli_footer table td {
+                font-size: 20px;
+            }
+            
+            .text-right {
+                text-align: right;
+            }
+            
+            .text-center {
+                text-align: center;
+            }
+            
+            .invoice__footer {
+                width: 100%;
+                float: left;
+            }
+            
+            .invoice__footer img {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <div class="invoice__header">
+        <div class="invoice__logo">
+            <apex:image url="https://asphaltgreen--uat.sandbox.file.force.com/servlet/servlet.ImageServer?id=0155e000000ScAp&oid=00D590000000Mzl&lastMod=1650829586000" width="351" height="66" />
+        </div>
+        <div class="invoice__title">
+            <h1>INVOICE</h1>
+        </div>
+        <div class="invoice__number">
+            <h1>{!Opportunity.Id}</h1>
+            <span><apex:outputText value="{0,date, MM/dd/YYYY}">
+                <apex:param value="{!Opportunity.CloseDate}" />
+                        </apex:outputText></span>
+        </div>
+    </div>
+    <div class="invoice__contact">
+        <div class="invoice__address invoice__address--left">
+            <h3>Billed To:</h3>
+            <span class="address__line">{!Opportunity.Account.Name}</span>
+            <span class="address__line">{!Opportunity.Account.npe01__One2OneContact__r.FirstName} {!Opportunity.Account.npe01__One2OneContact__r.LastName}</span>
+            <span class="address__line">{!Opportunity.Account.BillingStreet}</span>
+            <span class="address__line">{!Opportunity.Account.BillingCity}, {!Opportunity.Account.BillingState} {!Opportunity.Account.BillingPostalCode}</span>
+
+        </div>
+        <div class="invoice__address invoice__address--right">
+            <h3>Shipped To:</h3>
+            <span class="address__line">{!Opportunity.Account.Name}</span>
+            <span class="address__line">{!Opportunity.npsp__Primary_Contact__r.FirstName} {!Opportunity.npsp__Primary_Contact__r.LastName}</span>
+            <apex:outputPanel rendered="{!ISNULL(Opportunity.Account.ShippingStreet)}">
+                <span class="address__line">{!Opportunity.Account.ShippingStreet}</span>
+                <span class="address__line">{!Opportunity.Account.ShippingCity}, {!Opportunity.Account.ShippingState} {!Opportunity.Account.ShippingPostalCode}</span>
+            </apex:outputPanel>
+        </div>
+    </div>
+    <div class="invoice__oli">
+
+        <div class="oli__header">
+            <h2>Invoice Summary</h2>
+        </div>
+        <div class="oli__table">
+
+            <table>
+                <col style="width:40%"></col>
+                <col style="width:20%"></col>
+                <col style="width:20%"></col>
+                <col style="width:20%"></col>
+                <thead>
+                    <tr>
+                        <td>
+                            <strong>Item</strong>
+                        </td>
+                        <td class="text-center">
+                            <strong>Price</strong>
+                        </td>
+                        <td class="text-center">
+                            <strong>Quantity</strong>
+                        </td>
+                        <td class="text-right">
+                            <strong>Total</strong>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:outputPanel layout="none" rendered="{!AND(Opportunity.Type =='Donation',Opportunity.StageName =='Pledged')}">
+                        <tr>
+                            <td>{!Opportunity.Description}</td>
+                            <td class="text-center">${!Opportunity.Amount}</td>
+                            <td class="text-center">1</td>
+                            <td class="text-right">${!Opportunity.Amount}</td>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:repeat value="{!olis}" var="oli" id="theRepeater" rendered="{!NOT(AND(Opportunity.Type =='Donation',Opportunity.StageName =='Pledged'))}">
+                        <tr>
+                            <td>{!oli.Name}</td>
+                            <td class="text-center">${!oli.UnitPrice}</td>
+                            <td class="text-center">{!oli.Quantity}</td>
+                            <td class="text-right">${!oli.TotalPrice}</td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+        </div>
+        <div class="oli__footer">
+            <table>
+                <col style="width:85%"></col>
+                <col style="width:15%"></col>
+                <tbody>
+                    <tr>
+                        <td class="thick-line text-right">
+                            <strong>Total</strong>
+                        </td>
+                        <td class="thick-line text-right">${!Opportunity.Amount}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="invoice__oli">
+        <div class="oli__header">
+            <h2>Payment Summary</h2>
+        </div>
+        <div class="payment__table">
+            <table>
+                <col style="width:40%"></col>
+                <col style="width:20%"></col>
+                <col style="width:20%"></col>
+                <col style="width:20%"></col>
+                <thead>
+                    <tr>
+                        <td>
+                            <strong>Payment Type</strong>
+                        </td>
+                        <td class="text-center">
+                            <strong>Date</strong>
+                        </td>
+                        <td class="text-center">
+                            <strong>Reference #</strong>
+                        </td>
+                        <td class="text-right">
+                            <strong>Amount</strong>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!payments}" var="payment" id="paymentrepeater">
+                        <tr>
+                            <td>{!payment.npe01__Payment_Method__c}</td>
+                            <td class="text-center">
+                                <apex:outputText value="{0,date, MM/dd/YYYY}">
+                                    <apex:param value="{!payment.npe01__Payment_Date__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td class="text-center">{!payment.npe01__Check_Reference_Number__c}</td>
+                            <td class="text-right">${!payment.npe01__Payment_Amount__c}</td>
+                        </tr>
+                    </apex:repeat>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="oli__footer">
+            <table>
+                <col style="width:85%"></col>
+                <col style="width:15%"></col>
+                <tbody>
+                    <tr>
+                        <td class="thick-line text-right">
+                            <strong>Total Payments</strong>
+                        </td>
+                        <td class="thick-line text-right">${!Opportunity.npe01__Payments_Made__c}</td>
+                    </tr>
+                    <tr>
+                        <td class="thick-line text-right">
+                            <strong>Balance Due</strong>
+                        </td>
+                        <td class="thick-line text-right">${!Opportunity.npe01__Amount_Outstanding__c}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="invoice__memo">
+        <div class="memo__header">
+            <h3>Instructions/Notes</h3>
+        </div>
+        <div class="memo__content">
+            <p>{!Opportunity.Memo__c}</p>
+        </div>
+    </div>
+    
+    <div class="invoice__footer">
+        <apex:image url="https://asphaltgreen--uat.sandbox.file.force.com/servlet/servlet.ImageServer?id=0155e000000ScAu&oid=00D590000000Mzl&lastMod=1650829649000" width="100%" />
+    </div>
+
+</apex:page>

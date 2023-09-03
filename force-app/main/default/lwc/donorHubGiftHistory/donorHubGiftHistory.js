@@ -1,5 +1,6 @@
 import { LightningElement, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
+import InvoiceModal from 'c/pdfViewer';
 import getGiftHistory from '@salesforce/apex/DonorHubController.getGiftHistory';
 
 import USER_ID from '@salesforce/user/Id';
@@ -75,8 +76,19 @@ export default class DonorHubGiftHistory extends LightningElement {
         this.isLoading = false;
     }
 
-    handleDownloadReceipt(event) {
-        alert(`Here is the receipt for gift id ${event.detail.row.id}`);
+    async handleDownloadReceipt(event) {
+        const selectedId = event.detail.row.id
+        console.log(' handle download receipt with id --> ' + selectedId);
+        const result = await InvoiceModal.open({
+            // `label` is not included here in this example.
+            // it is set on lightning-modal-header instead
+            size: 'large',
+            description: 'Accessible description of modal\'s purpose',
+            recordId: selectedId,
+        });
+        // if modal closed with X button, promise returns result = 'undefined'
+        // if modal closed with OK button, promise returns result = 'okay'
+        console.log(result);
     }
 
 }
