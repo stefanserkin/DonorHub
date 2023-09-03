@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title={cardTitle} icon-name={cardIconName}>
+        <!-- SPINNER ON LOAD -->
+        <div if:true={isLoading} class="slds-is-relative slds-p-vertical_x-large" >
+            <lightning-spinner 
+                alternative-text="Loading..." 
+                variant="brand" 
+                size="medium"
+            ></lightning-spinner>
+        </div>
+
+        <!-- HOUSEHOLD GIFTS DATATABLE -->
+        <div if:true={householdGifts}>
+            <lightning-datatable
+                data={householdGifts} 
+                columns={cols} 
+                key-field="Id" 
+                hide-checkbox-column 
+                onrowaction={handleDownloadReceipt}
+            ></lightning-datatable>
+        </div>
+
+    </lightning-card>
+</template>
