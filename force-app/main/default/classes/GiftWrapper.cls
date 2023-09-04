@@ -36,34 +36,4 @@ public class GiftWrapper {
     @AuraEnabled
     public OppLineItemWrapper[] olis {get;set;}
 
-    /*
-    public class Payment {
-        @AuraEnabled
-        public Decimal amount;
-
-        @AuraEnabled
-        public Boolean paid;
-
-        @AuraEnabled
-        public Date paymentDate;
-
-        @AuraEnabled
-        public String checkReferenceNumber;
-
-        @AuraEnabled
-        public String paymentMethod;
-    }
-
-    public class OppProduct {
-        @AuraEnabled
-        public Decimal unitPrice;
-
-        @AuraEnabled
-        public Integer quantity;
-
-        @AuraEnabled
-        public Decimal totalPrice;
-    }
-    */
-
 }

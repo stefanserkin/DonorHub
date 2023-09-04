@@ -10,6 +10,9 @@ public class PaymentWrapper {
     public Boolean paid {get;set;}
 
     @AuraEnabled
+    public Date scheduledDate {get;set;}
+
+    @AuraEnabled
     public Date paymentDate {get;set;}
 
     @AuraEnabled

@@ -1,4 +1,4 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import InvoiceModal from 'c/pdfViewer';
 import getGiftHistory from '@salesforce/apex/DonorHubController.getGiftHistory';
@@ -34,10 +34,10 @@ const COLS = [
 ];
 
 export default class DonorHubGiftHistory extends LightningElement {
+    @api cardTitle = 'My Gift History';
+    @api cardIconName = 'standard:opportunity';
     error;
     isLoading = false;
-    cardTitle = 'My Gift History';
-    cardIconName = 'standard:opportunity';
     dateRangeValue = 'THIS_YEAR';
 
     cols = COLS;
@@ -53,7 +53,7 @@ export default class DonorHubGiftHistory extends LightningElement {
             { label: 'Last Year', value: 'LAST_YEAR' },
             { label: 'Last 2 Years', value: 'LAST_N_YEARS:2' },
             { label: 'Last 3 Years', value: 'LAST_N_YEARS:3' },
-            { label: 'All Time', value: 'LAST_N_YEARS:100' }
+            { label: 'All Time', value: 'ALL_TIME' }
         ];
     }
 

@@ -1,0 +1,29 @@
+<template>
+    <template lwc:if={pledges}>
+        <template for:each={pledges} for:item="pledge">
+            <lightning-layout key={pledge.id} multiple-rows>
+                <lightning-layout-item size="12">
+                    <template for:each={pledge.payments} for:item="pay">
+                        <lightning-card key={pay.Id} title={cardTitle} icon-name={cardIconName}>
+                
+                            <div slot="actions">
+                                <lightning-button 
+                                    variant="brand" 
+                                    label="Make Payment" 
+                                    data-id={pay.id} 
+                                    data-amount={pay.amount}
+                                    title="Make Payment" 
+                                    onclick={handleMakePayment} 
+                                ></lightning-button>
+                            </div>
+                            <div class="slds-var-m-around_medium">
+                                <p>Date Pledged: {pledge.committedDate}</p>
+                                <p>Expected Payment Date: {pay.scheduledDate}</p>
+                            </div>
+                        </lightning-card>
+                    </template>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+    </template>
+</template>

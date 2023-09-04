@@ -7,9 +7,23 @@ public with sharing class DonorHubController {
     ) {
         try {
             List<GiftWrapper> lstGiftWraps = DonorHubSelector.getGiftWrappers(
-                accountId, dateRange
+                accountId, 
+                dateRange
             );
             return lstGiftWraps;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+
+    @AuraEnabled(cacheable=true)
+    public static List<GiftWrapper> getOutstandingPledges(
+        String accountId
+    ) {
+        try {
+            List<GiftWrapper> lstPledges = DonorHubSelector.getOutstandingPledges(accountId);
+            return lstPledges;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
