@@ -62,9 +62,7 @@ export default class DonorHubOpenPledges extends LightningElement {
                 row.closeDate = this.formatDate(row.closeDate);
                 row.committedDate = this.formatDate(row.committedDate);
                 row.payments.forEach(pay => {
-                    console.log('::: pay scheduled date before --> ',pay.scheduledDate);
                     pay.scheduledDate = this.formatDate(pay.scheduledDate);
-                    console.log('::: pay scheduled date after --> ',pay.scheduledDate);
                     if (pay.paymentDate != null) {
                         pay.paymentDate = this.formatDate(pay.paymentDate);
                     }
@@ -72,12 +70,10 @@ export default class DonorHubOpenPledges extends LightningElement {
             });
 
             this.pledges = rows;
-            console.table(this.pledges);
             this.error = undefined;
         } else if (result.error) {
             this.pledges = undefined;
             this.error = result.error;
-            console.error(this.error);
         }
     }
 

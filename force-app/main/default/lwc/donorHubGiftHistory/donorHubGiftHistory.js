@@ -79,14 +79,11 @@ export default class DonorHubGiftHistory extends LightningElement {
         this.isLoading = true;
         this.wiredGiftHistory = result;
         if (result.data) {
-            console.log('has data');
             this.householdGifts = result.data;
-            console.table(this.householdGifts);
             this.error = undefined;
         } else if (result.error) {
             this.householdGifts = undefined;
             this.error = result.error;
-            console.error(this.error);
         }
         this.isLoading = false;
     }
@@ -107,8 +104,6 @@ export default class DonorHubGiftHistory extends LightningElement {
     }
 
     handleDateRangeChange(event) {
-        console.log(':::::: handleDateRangeChange');
-        console.log(':::::: value --> ' + event.detail.value);
         this.dateRangeValue = event.detail.value;
     }
 
