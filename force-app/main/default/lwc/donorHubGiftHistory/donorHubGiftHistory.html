@@ -9,6 +9,18 @@
             ></lightning-spinner>
         </div>
 
+        <!-- DATE RANGE FILTER -->
+        <div slot="actions">
+            <lightning-combobox
+                name="dateRange"
+                label="Date Range"
+                value={dateRangeValue}
+                options={dateRangeOptions}
+                onchange={handleDateRangeChange}
+                required
+            ></lightning-combobox>
+        </div>
+
         <!-- HOUSEHOLD GIFTS DATATABLE -->
         <div if:true={householdGifts}>
             <lightning-datatable

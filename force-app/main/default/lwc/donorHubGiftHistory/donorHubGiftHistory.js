@@ -20,6 +20,7 @@ const COLS = [
             currencyCode: 'USD'
         },
     },
+    { label: 'Status', fieldName: 'stageName', type: 'text' },
     {  
         type: 'button',
         typeAttributes: {
@@ -37,6 +38,7 @@ export default class DonorHubGiftHistory extends LightningElement {
     isLoading = false;
     cardTitle = 'My Gift History';
     cardIconName = 'standard:opportunity';
+    dateRangeValue = 'THIS_YEAR';
 
     cols = COLS;
     userId = USER_ID;
@@ -44,6 +46,16 @@ export default class DonorHubGiftHistory extends LightningElement {
     contactId;
     wiredGiftHistory = [];
     householdGifts;
+
+    get dateRangeOptions() {
+        return [
+            { label: 'This Year', value: 'THIS_YEAR' },
+            { label: 'Last Year', value: 'LAST_YEAR' },
+            { label: 'Last 2 Years', value: 'LAST_N_YEARS:2' },
+            { label: 'Last 3 Years', value: 'LAST_N_YEARS:3' },
+            { label: 'All Time', value: 'LAST_N_YEARS:100' }
+        ];
+    }
 
     @wire(getRecord, {
 		recordId: USER_ID,
@@ -60,11 +72,14 @@ export default class DonorHubGiftHistory extends LightningElement {
 		}
 	}
 
-    @wire(getGiftHistory, {accountId: '$accountId'})
-    wiredResult(result) {
+    @wire(getGiftHistory, {
+        accountId: '$accountId',
+        dateRange: '$dateRangeValue'
+    }) wiredResult(result) {
         this.isLoading = true;
         this.wiredGiftHistory = result;
         if (result.data) {
+            console.log('has data');
             this.householdGifts = result.data;
             console.table(this.householdGifts);
             this.error = undefined;
@@ -89,6 +104,12 @@ export default class DonorHubGiftHistory extends LightningElement {
         // if modal closed with X button, promise returns result = 'undefined'
         // if modal closed with OK button, promise returns result = 'okay'
         console.log(result);
+    }
+
+    handleDateRangeChange(event) {
+        console.log(':::::: handleDateRangeChange');
+        console.log(':::::: value --> ' + event.detail.value);
+        this.dateRangeValue = event.detail.value;
     }
 
 }

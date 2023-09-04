@@ -1,4 +1,4 @@
-<apex:page showHeader="false" sidebar="false" renderAs="pdf" standardStylesheets="false" applyHtmlTag="false" standardController="Opportunity" extensions="OpportunityInvoiceController">
+<apex:page showHeader="false" sidebar="false" renderAs="pdf" standardStylesheets="false" applyHtmlTag="false">
 
     <head>
         <style>
@@ -143,6 +143,8 @@
             }
         </style>
     </head>
+    <p>some page content</p>
+    <!--
     <div class="invoice__header">
         <div class="invoice__logo">
             <apex:image url="https://asphaltgreen--uat.sandbox.file.force.com/servlet/servlet.ImageServer?id=0155e000000ScAp&oid=00D590000000Mzl&lastMod=1650829586000" width="351" height="66" />
@@ -164,6 +166,7 @@
             <span class="address__line">{!Opportunity.Account.npe01__One2OneContact__r.FirstName} {!Opportunity.Account.npe01__One2OneContact__r.LastName}</span>
             <span class="address__line">{!Opportunity.Account.BillingStreet}</span>
             <span class="address__line">{!Opportunity.Account.BillingCity}, {!Opportunity.Account.BillingState} {!Opportunity.Account.BillingPostalCode}</span>
+
         </div>
         <div class="invoice__address invoice__address--right">
             <h3>Shipped To:</h3>
@@ -290,17 +293,13 @@
                         <td class="thick-line text-right">
                             <strong>Total Payments</strong>
                         </td>
-                        <td class="thick-line text-right">
-                            ${!Opportunity.npe01__Payments_Made__c}
-                        </td>
+                        <td class="thick-line text-right">${!Opportunity.npe01__Payments_Made__c}</td>
                     </tr>
                     <tr>
                         <td class="thick-line text-right">
                             <strong>Balance Due</strong>
                         </td>
-                        <td class="thick-line text-right">
-                            ${!Opportunity.npe01__Amount_Outstanding__c}
-                        </td>
+                        <td class="thick-line text-right">${!Opportunity.npe01__Amount_Outstanding__c}</td>
                     </tr>
                 </tbody>
             </table>
@@ -319,5 +318,6 @@
     <div class="invoice__footer">
         <apex:image url="https://asphaltgreen--uat.sandbox.file.force.com/servlet/servlet.ImageServer?id=0155e000000ScAu&oid=00D590000000Mzl&lastMod=1650829649000" width="100%" />
     </div>
+-->
 
 </apex:page>
