@@ -1,5 +1,4 @@
 /**
- *  
  *  Copyright (c) 2015, Salesforce.org
     All rights reserved.
     
@@ -29,13 +28,15 @@
     POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import { getRecord, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import donationHistoryGivingSummaryTitle from '@salesforce/label/npsp.donationHistoryGivingSummaryTitle';
 import commonUnknownError from '@salesforce/label/npsp.commonUnknownError';
 import donationHistoryLabelLifetime from '@salesforce/label/npsp.donationHistoryLabelLifetime';
 import donationHistoryLabelThisYear from '@salesforce/label/npsp.donationHistoryLabelThisYear';
 import donationHistoryLabelPreviousYear from '@salesforce/label/npsp.donationHistoryLabelPreviousYear';
+import USER_ID from '@salesforce/user/Id';
+import CONTACTID_FIELD from '@salesforce/schema/User.ContactId';
 import TOTAL_AMOUNT from '@salesforce/schema/Contact.npo02__TotalOppAmount__c';
 import AMOUNT_CURRENT_YEAR from '@salesforce/schema/Contact.npo02__OppAmountThisYear__c';
 import AMOUNT_LAST_YEAR from '@salesforce/schema/Contact.npo02__OppAmountLastYear__c';
@@ -53,7 +54,6 @@ const FIELDS = [TOTAL_AMOUNT, AMOUNT_CURRENT_YEAR, AMOUNT_LAST_YEAR];
 
 export default class DonorHubGivingSummary extends LightningElement {
 
-
     labels = {
         donationHistoryGivingSummaryTitle,
         donationHistoryLabelLifetime,
@@ -67,11 +67,25 @@ export default class DonorHubGivingSummary extends LightningElement {
     previousYear = 0;
     
     contact;
-    @api contactId;
+    contactId;
 
     errorMessage=false;
     
     formFactor = FORM_FACTOR;
+
+    @wire(getRecord, {
+		recordId: USER_ID,
+		fields: [CONTACTID_FIELD]
+	}) wireuser({
+		error,
+		data
+	}) {
+		if (error) {
+			this.error = error; 
+		} else if (data) {
+			this.contactId = data.fields.ContactId.value;
+		}
+	}
 
     @wire(getRecord, { recordId: '$contactId', fields: FIELDS})
         wiredRecord({ error, data }) {
