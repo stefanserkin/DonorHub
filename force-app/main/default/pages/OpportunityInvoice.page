@@ -312,7 +312,7 @@
             <h3>Instructions/Notes</h3>
         </div>
         <div class="memo__content">
-            <p>{!Opportunity.Memo__c}</p>
+            <p>{!Opportunity.Public_Memo__c}</p>
         </div>
     </div>
     

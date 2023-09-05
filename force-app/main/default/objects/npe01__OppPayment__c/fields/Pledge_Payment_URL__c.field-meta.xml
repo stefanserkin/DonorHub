@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pledge_Payment_URL__c</fullName>
+    <description>A link to a donation form, pre-populated with information from this unpaid payment record</description>
+    <externalId>false</externalId>
+    <formula>IF( !npe01__Paid__c , 
+  &quot;https://give.asphaltgreen.org/pledge-payment&quot; &amp;
+    &quot;?custom_input_one=&quot; &amp; Id &amp; 
+    &quot;&amp;onetime_other_amt=&quot; &amp; TEXT(npe01__Payment_Amount__c) &amp; 
+    &quot;&amp;name=&quot; &amp; npe01__Opportunity__r.npsp__Primary_Contact__r.FirstName &amp; &quot;%20&quot; &amp; npe01__Opportunity__r.npsp__Primary_Contact__r.LastName &amp; 
+    &quot;&amp;email=&quot; &amp; SUBSTITUTE(npe01__Opportunity__r.npsp__Primary_Contact__r.Email,&quot;+&quot;,&quot;%2b&quot;)
+  ,
+
+  &quot;&quot;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>A link to a donation form, pre-populated with information from this unpaid payment record</inlineHelpText>
+    <label>Pledge Payment URL</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -84,6 +84,7 @@ export default class DonorHubGiftHistory extends LightningElement {
         } else if (result.error) {
             this.householdGifts = undefined;
             this.error = result.error;
+            console.error(this.error);
         }
         this.isLoading = false;
     }
