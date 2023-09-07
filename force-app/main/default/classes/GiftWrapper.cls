@@ -10,6 +10,12 @@ public class GiftWrapper {
     public String name {get;set;}
 
     @AuraEnabled
+    public String accountId {get;set;}
+
+    @AuraEnabled
+    public String contacId {get;set;}
+
+    @AuraEnabled
     public String type {get;set;}
 
     @AuraEnabled

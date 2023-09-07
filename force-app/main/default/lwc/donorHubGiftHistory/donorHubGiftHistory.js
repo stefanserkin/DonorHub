@@ -1,8 +1,12 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
-import InvoiceModal from 'c/pdfViewer';
+import { loadScript } from 'lightning/platformResourceLoader';
+import { formatDate } from 'c/donorHubUtils';
+// Previously was loading a modal to render the pdf and offer download
+// import TaxReceiptModal from 'c/giftTaxReceipt';
 import getGiftHistory from '@salesforce/apex/DonorHubController.getGiftHistory';
-
+import JSPDF from '@salesforce/resourceUrl/jspdf';
+import AG_LOGO_IMAGE from '@salesforce/resourceUrl/ag_logo';
 import USER_ID from '@salesforce/user/Id';
 import CONTACTID_FIELD from '@salesforce/schema/User.ContactId';
 import ACCOUNTID_FIELD from '@salesforce/schema/User.AccountId';
@@ -42,10 +46,17 @@ export default class DonorHubGiftHistory extends LightningElement {
 
     cols = COLS;
     userId = USER_ID;
+    agLogo = AG_LOGO_IMAGE;
     accountId;
     contactId;
     wiredGiftHistory = [];
     householdGifts;
+
+    headers = this.createHeaders([
+        "id",
+        "formattedAmount", 
+        "paymentDate"
+    ]);
 
     get dateRangeOptions() {
         return [
@@ -55,6 +66,14 @@ export default class DonorHubGiftHistory extends LightningElement {
             { label: 'Last 3 Years', value: 'LAST_N_YEARS:3' },
             { label: 'All Time', value: 'ALL_TIME' }
         ];
+    }
+
+    renderedCallback() {
+        console.log('renderedCallback');
+        
+        Promise.all([
+            loadScript(this, JSPDF)
+        ]);
     }
 
     @wire(getRecord, {
@@ -79,7 +98,17 @@ export default class DonorHubGiftHistory extends LightningElement {
         this.isLoading = true;
         this.wiredGiftHistory = result;
         if (result.data) {
-            this.householdGifts = result.data;
+            let rows = JSON.parse (JSON.stringify(result.data) );
+            rows.forEach(row => {
+                row.closeDate = formatDate(row.closeDate);
+                row.committedDate = row.committedDate != null ? formatDate(row.committedDate) : null;
+                row.payments.forEach(pay => {
+                    pay.scheduledDate = pay.scheduledDate != null ? formatDate(pay.scheduledDate) : null;
+                    pay.paymentDate = pay.paymentDate != null ? formatDate(pay.paymentDate) : null;
+                    pay.formattedAmount = '$' + pay.amount;
+                });
+            });
+            this.householdGifts = rows;
             this.error = undefined;
         } else if (result.error) {
             this.householdGifts = undefined;
@@ -89,19 +118,50 @@ export default class DonorHubGiftHistory extends LightningElement {
         this.isLoading = false;
     }
 
-    async handleDownloadReceipt(event) {
-        const selectedId = event.detail.row.id
-        console.log(' handle download receipt with id --> ' + selectedId);
-        const result = await InvoiceModal.open({
-            // `label` is not included here in this example.
-            // it is set on lightning-modal-header instead
-            size: 'large',
-            description: 'Accessible description of modal\'s purpose',
-            recordId: selectedId,
+    handleDownloadReceipt(event) {
+        const selectedId = event.detail.row.id;
+        let selectedOpp = this.householdGifts.find(item => item.id === selectedId);
+        this.generatePdf(selectedOpp);
+    }
+
+    generatePdf(opportunity) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: "portrait",
+            unit: 'mm'
+            // do more stuff? the library allows for encryption that can be set up here
         });
-        // if modal closed with X button, promise returns result = 'undefined'
-        // if modal closed with OK button, promise returns result = 'okay'
-        console.log(result);
+
+        doc.addImage(this.agLogo, "PNG", 10, 5, 80, 15, null, "FAST");
+        doc.text(
+            'I am a tax receipt for donation id: ' + opportunity.id, 
+            20, 
+            40
+        );
+        console.table(opportunity.payments);
+        console.log(this.headers);
+        doc.table(20, 70, opportunity.payments, this.headers, { autosize:true });
+        doc.save('gift-receipt.pdf');
+    }
+
+    downloadTaxReceipt(event) {
+        console.log('::::: called loadTaxReceipt');
+        this.generatePdf();
+    }
+
+    createHeaders(keys) {
+        let result = [];
+        for (let i = 0; i < keys.length; i++) {
+            result.push({
+                id: keys[i],
+                name: keys[i],
+                prompt: keys[i],
+                width: 65,
+                align: "center",
+                padding: 0
+            });
+        }
+        return result;
     }
 
     handleDateRangeChange(event) {

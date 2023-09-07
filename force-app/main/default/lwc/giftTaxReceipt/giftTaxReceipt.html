@@ -1,0 +1,37 @@
+<template>
+
+    <lightning-modal-header label="Donation Receipt"></lightning-modal-header>
+
+    <lightning-modal-body>
+        <div>
+            <img src={headerImageUrl} />
+            <p class="slds-var-m-around_medium">
+                {gift.closeDate}
+            </p>
+            <p class="slds-var-m-around_medium">
+                <lightning-button label="Download" onclick={loadTaxReceipt}></lightning-button>
+            </p>
+            <p class="slds-var-m-around_medium">
+                Thank you for your generous donation to Asphalt Green of&nbsp;
+                <lightning-formatted-number 
+                    value={gift.amount} 
+                    format-style="currency" 
+                    currency-code="USD"
+                ></lightning-formatted-number>
+                .
+            </p>
+            <p class="slds-var-m-around_medium">
+                Support from donors like you have allowed us to continue meeting New Yorkers where they are – in schoolyards, gymnasiums, senior centers, pools across the city, and even online – and provide them the same excellent programs that Asphalt Green has always offered to help all of us stay active and healthy. 
+            </p>
+            <p class="slds-var-m-around_medium">
+                Thank you for your generous gift. You are helping us ensure that New Yorkers of all ages and backgrounds are able to experience the best of Asphalt Green. 
+            </p>
+            <img src={footerImageUrl} />
+        </div>
+    </lightning-modal-body>
+
+    <lightning-modal-footer>
+        <lightning-button label="OK" onclick={handleOkay}></lightning-button>
+    </lightning-modal-footer>
+
+</template>

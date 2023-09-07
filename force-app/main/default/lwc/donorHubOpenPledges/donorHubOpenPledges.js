@@ -1,4 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
+import { formatDate } from 'c/donorHubUtils';
 import { getRecord } from 'lightning/uiRecordApi';
 import getOutstandingPledges  from '@salesforce/apex/DonorHubController.getOutstandingPledges';
 import USER_ID from '@salesforce/user/Id';
@@ -59,12 +60,12 @@ export default class DonorHubOpenPledges extends LightningElement {
         if (result.data) {
             let rows = JSON.parse( JSON.stringify(result.data) );
             rows.forEach(row => {
-                row.closeDate = this.formatDate(row.closeDate);
-                row.committedDate = this.formatDate(row.committedDate);
+                row.closeDate = formatDate(row.closeDate);
+                row.committedDate = formatDate(row.committedDate);
                 row.payments.forEach(pay => {
-                    pay.scheduledDate = this.formatDate(pay.scheduledDate);
+                    pay.scheduledDate = formatDate(pay.scheduledDate);
                     if (pay.paymentDate != null) {
-                        pay.paymentDate = this.formatDate(pay.paymentDate);
+                        pay.paymentDate = formatDate(pay.paymentDate);
                     }
                 })
             });
@@ -77,6 +78,7 @@ export default class DonorHubOpenPledges extends LightningElement {
         }
     }
 
+    /*
     formatDate(date) {
         const dateOptions = {
             weekday: "long", year: "numeric", month: "numeric", day: "numeric", timeZone: 'UTC'
@@ -84,6 +86,7 @@ export default class DonorHubOpenPledges extends LightningElement {
         let dt = new Date( date );
         return new Intl.DateTimeFormat('en-US', dateOptions).format(dt);
     }
+    */
 
     handleMakePayment(event) {
         const selected = event.currentTarget.dataset;

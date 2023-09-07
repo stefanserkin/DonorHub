@@ -9,7 +9,7 @@ public without sharing class DonorHubSelector {
         String dateRange
     ) {
         // Get opportunity wth child olis and payments
-        String strQuery = 'SELECT Id, Amount, CloseDate, StageName, Committed_Date__c, Type, Public_Memo__c, ' +
+        String strQuery = 'SELECT Id, AccountId, npsp__Primary_Contact__c, Amount, CloseDate, StageName, Committed_Date__c, Type, Public_Memo__c, ' +
             '(SELECT Id, Name, UnitPrice, Quantity, TotalPrice FROM OpportunityLineItems), ' +
             '(SELECT Id, npe01__Payment_Method__c, npe01__Paid__c, npe01__Payment_Date__c, npe01__Scheduled_Date__c, npe01__Check_Reference_Number__c, npe01__Payment_Amount__c FROM npe01__OppPayment__r) ' +
             'FROM Opportunity WHERE AccountId = :accountId AND Committed__c = true ';
@@ -18,6 +18,7 @@ public without sharing class DonorHubSelector {
             strQuery += 'AND CloseDate = ' + dateRange + ' ';
         }
         strQuery += 'WITH SYSTEM_MODE ORDER BY CloseDate DESC LIMIT 1000';
+        
         // Query for records
         List<Opportunity> lstOpps = Database.query(strQuery);
 
@@ -40,7 +41,7 @@ public without sharing class DonorHubSelector {
         String accountId
     ) {
         List<Opportunity> lstOppPledges = [
-            SELECT Id, Amount, StageName, Committed_Date__c, CloseDate, Type, Public_Memo__c,
+            SELECT Id, AccountId, npsp__Primary_Contact__c, Amount, StageName, Committed_Date__c, CloseDate, Type, Public_Memo__c,
                    (SELECT Id, npe01__Paid__c, npe01__Payment_Amount__c, npe01__Payment_Date__c, npe01__Scheduled_Date__c 
                       FROM npe01__OppPayment__r 
                      WHERE npe01__Paid__c = false)
@@ -67,6 +68,8 @@ public without sharing class DonorHubSelector {
         for (Opportunity opp : lstOpps) {
             GiftWrapper wrap = new GiftWrapper();
             wrap.id = opp.Id;
+            wrap.accountId = opp.AccountId;
+            wrap.contacId = opp.npsp__Primary_Contact__c;
             wrap.type = opp.Type;
             wrap.amount = opp.Amount;
             wrap.closeDate = opp.CloseDate;
