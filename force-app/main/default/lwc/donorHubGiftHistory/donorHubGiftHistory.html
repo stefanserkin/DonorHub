@@ -11,6 +11,13 @@
 
         <!-- DATE RANGE FILTER -->
         <div slot="actions">
+            <lightning-button 
+                label="Download All"
+                name="Download All"
+                variant="brand"
+                icon-name="utility:download"
+                onclick={handleDownloadAll}
+            ></lightning-button>
             <lightning-combobox
                 name="dateRange"
                 label="Date Range"

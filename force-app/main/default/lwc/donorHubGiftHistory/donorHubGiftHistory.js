@@ -121,6 +121,10 @@ export default class DonorHubGiftHistory extends LightningElement {
         this.generatePdf(selectedOpp);
     }
 
+    handleDownloadAll() {
+        console.log('Date range selected --> ',this.dateRangeValue);
+    }
+
     generatePdf(opportunity) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
