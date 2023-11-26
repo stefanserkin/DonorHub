@@ -69,7 +69,7 @@ public without sharing class DonorHubSelector {
             GiftWrapper wrap = new GiftWrapper();
             wrap.id = opp.Id;
             wrap.accountId = opp.AccountId;
-            wrap.contacId = opp.npsp__Primary_Contact__c;
+            wrap.contactId = opp.npsp__Primary_Contact__c;
             wrap.type = opp.Type;
             wrap.amount = opp.Amount;
             wrap.closeDate = opp.CloseDate;

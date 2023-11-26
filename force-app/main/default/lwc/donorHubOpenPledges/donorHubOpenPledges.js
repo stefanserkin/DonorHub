@@ -78,16 +78,6 @@ export default class DonorHubOpenPledges extends LightningElement {
         }
     }
 
-    /*
-    formatDate(date) {
-        const dateOptions = {
-            weekday: "long", year: "numeric", month: "numeric", day: "numeric", timeZone: 'UTC'
-        };
-        let dt = new Date( date );
-        return new Intl.DateTimeFormat('en-US', dateOptions).format(dt);
-    }
-    */
-
     handleMakePayment(event) {
         const selected = event.currentTarget.dataset;
         let url = this.makePaymentBaseUrl + 

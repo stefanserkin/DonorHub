@@ -3,7 +3,6 @@ import { getRecord } from 'lightning/uiRecordApi';
 import { loadScript } from 'lightning/platformResourceLoader';
 import { formatDate } from 'c/donorHubUtils';
 // Previously was loading a modal to render the pdf and offer download
-// import TaxReceiptModal from 'c/giftTaxReceipt';
 import getGiftHistory from '@salesforce/apex/DonorHubController.getGiftHistory';
 import JSPDF from '@salesforce/resourceUrl/jspdf';
 import AG_LOGO_IMAGE from '@salesforce/resourceUrl/ag_logo';
@@ -69,8 +68,6 @@ export default class DonorHubGiftHistory extends LightningElement {
     }
 
     renderedCallback() {
-        console.log('renderedCallback');
-        
         Promise.all([
             loadScript(this, JSPDF)
         ]);
@@ -101,10 +98,10 @@ export default class DonorHubGiftHistory extends LightningElement {
             let rows = JSON.parse (JSON.stringify(result.data) );
             rows.forEach(row => {
                 row.closeDate = formatDate(row.closeDate);
-                row.committedDate = row.committedDate != null ? formatDate(row.committedDate) : null;
+                row.committedDate = row.committedDate != null ? formatDate(row.committedDate) : '';
                 row.payments.forEach(pay => {
-                    pay.scheduledDate = pay.scheduledDate != null ? formatDate(pay.scheduledDate) : null;
-                    pay.paymentDate = pay.paymentDate != null ? formatDate(pay.paymentDate) : null;
+                    pay.scheduledDate = pay.scheduledDate != null ? formatDate(pay.scheduledDate) : '';
+                    pay.paymentDate = pay.paymentDate != null ? formatDate(pay.paymentDate) : '';
                     pay.formattedAmount = '$' + pay.amount;
                 });
             });
@@ -131,22 +128,14 @@ export default class DonorHubGiftHistory extends LightningElement {
             unit: 'mm'
             // do more stuff? the library allows for encryption that can be set up here
         });
-
         doc.addImage(this.agLogo, "PNG", 10, 5, 80, 15, null, "FAST");
         doc.text(
             'I am a tax receipt for donation id: ' + opportunity.id, 
             20, 
             40
         );
-        console.table(opportunity.payments);
-        console.log(this.headers);
         doc.table(20, 70, opportunity.payments, this.headers, { autosize:true });
         doc.save('gift-receipt.pdf');
-    }
-
-    downloadTaxReceipt(event) {
-        console.log('::::: called loadTaxReceipt');
-        this.generatePdf();
     }
 
     createHeaders(keys) {

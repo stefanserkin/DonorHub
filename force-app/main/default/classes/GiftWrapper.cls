@@ -13,7 +13,7 @@ public class GiftWrapper {
     public String accountId {get;set;}
 
     @AuraEnabled
-    public String contacId {get;set;}
+    public String contactId {get;set;}
 
     @AuraEnabled
     public String type {get;set;}
