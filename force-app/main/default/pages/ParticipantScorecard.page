@@ -1,0 +1,20 @@
+<apex:page controller="ParticipantScorecardController" renderAs="pdf">
+    <apex:sectionHeader title="Participant Scorecard" subtitle="{!programEngagement.Name}" />
+    <apex:pageBlock title="Self-Assessments">
+        <apex:repeat value="{!selfAssessments}" var="sa">
+            <apex:pageBlockSection title="Self-Assessment: {!sa.Name}">
+                <apex:repeat value="{!sa.SelfAssessmentAnswers__r}" var="answer">
+                    <apex:outputText value="{!answer.Question__c}: {!answer.Answer__c}" /><br/>
+                </apex:repeat>
+            </apex:pageBlockSection>
+        </apex:repeat>
+    </apex:pageBlock>
+    <apex:pageBlock title="Service Deliveries">
+        <apex:repeat value="{!serviceDeliveries}" var="sd">
+            <apex:pageBlockSection title="Service Delivery: {!sd.Name}">
+                <apex:outputText value="Date: {!sd.DeliveryDate__c}" /><br/>
+                <apex:outputText value="Type: {!sd.Type__c}" /><br/>
+            </apex:pageBlockSection>
+        </apex:repeat>
+    </apex:pageBlock>
+</apex:page>

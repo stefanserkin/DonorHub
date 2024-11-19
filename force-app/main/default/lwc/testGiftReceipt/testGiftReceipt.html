@@ -1,0 +1,7 @@
+<template>
+    <lightning-card title="Gift Receipt">
+        <lightning-input type="text" label="Gift Id" value={recordId} data-id="giftId" onchange={handleRecordIdChange}></lightning-input>
+
+        <lightning-button variant="neutral" label="Download PDF" title="Download PDF" onclick={downloadPdf}></lightning-button>
+    </lightning-card>
+</template>

@@ -2,13 +2,12 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { loadScript } from 'lightning/platformResourceLoader';
 import { formatDate } from 'c/donorHubUtils';
-// Previously was loading a modal to render the pdf and offer download
 import getGiftHistory from '@salesforce/apex/DonorHubController.getGiftHistory';
-import JSPDF from '@salesforce/resourceUrl/jspdf';
-import AG_LOGO_IMAGE from '@salesforce/resourceUrl/ag_logo';
 import USER_ID from '@salesforce/user/Id';
 import CONTACTID_FIELD from '@salesforce/schema/User.ContactId';
 import ACCOUNTID_FIELD from '@salesforce/schema/User.AccountId';
+// import JSPDF from '@salesforce/resourceUrl/jspdf';
+// import AG_LOGO_IMAGE from '@salesforce/resourceUrl/ag_logo';
 
 const COLS = [
     { label: 'Date', fieldName: 'closeDate', type: 'date',
@@ -45,17 +44,10 @@ export default class DonorHubGiftHistory extends LightningElement {
 
     cols = COLS;
     userId = USER_ID;
-    agLogo = AG_LOGO_IMAGE;
     accountId;
     contactId;
     wiredGiftHistory = [];
     householdGifts;
-
-    headers = this.createHeaders([
-        "id",
-        "formattedAmount", 
-        "paymentDate"
-    ]);
 
     get dateRangeOptions() {
         return [
@@ -65,12 +57,6 @@ export default class DonorHubGiftHistory extends LightningElement {
             { label: 'Last 3 Years', value: 'LAST_N_YEARS:3' },
             { label: 'All Time', value: 'ALL_TIME' }
         ];
-    }
-
-    renderedCallback() {
-        Promise.all([
-            loadScript(this, JSPDF)
-        ]);
     }
 
     @wire(getRecord, {
@@ -121,6 +107,31 @@ export default class DonorHubGiftHistory extends LightningElement {
         this.generatePdf(selectedOpp);
     }
 
+    generatePdf(opportunity) {
+        console.log('::: creating pdf for opportunity --> ' + JSON.stringify(opportunity));
+    }
+
+    handleDateRangeChange(event) {
+        this.dateRangeValue = event.detail.value;
+    }
+
+
+    /************************************************
+     * jsPDF implementation for receipt generation
+     ************************************************/
+    /*
+    agLogo = AG_LOGO_IMAGE;
+
+    renderedCallback() {
+        Promise.all([loadScript(this, JSPDF)]);
+    }
+
+    headers = this.createHeaders([
+        "id",
+        "formattedAmount", 
+        "paymentDate"
+    ]);
+
     handleDownloadAll() {
         console.log('Date range selected --> ',this.dateRangeValue);
     }
@@ -157,8 +168,6 @@ export default class DonorHubGiftHistory extends LightningElement {
         return result;
     }
 
-    handleDateRangeChange(event) {
-        this.dateRangeValue = event.detail.value;
-    }
+    */
 
 }

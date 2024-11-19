@@ -1,0 +1,141 @@
+<apex:page id="MyFirstPDF" standardController="Account" renderAs="pdf">
+    <body>
+        
+         <div class="" style="min-height: 2in;">
+            <!-- SECTION: header w/ company address and logo -->
+            <table class="header-table">
+                <tr>
+                    <td style="width: 75%">
+                        <apex:image width="2.75in" url="{!$Resource.AGLogo}"/>
+                    </td>
+                    <td style="">
+                        <table style="width: 2.8in;border: solid 1px black; border-collapse: separate; ">
+                            <tr>
+                                <td style="text-align: center; font-size: 16pt; font-weight: bold; border-bottom: solid 1px black"
+                                    colspan="2">Invoice Summary
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>&nbsp;&nbsp;Date:</td>
+                                <td style="text-align:right;"> 
+       								{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}&nbsp;&nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;&nbsp;Account:</td>
+                                <td style="text-align:right;">{!Account.Name}&nbsp;&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table>
+            <tr>
+                <td >Address:</td>
+                <table Style="padding-left: 90px;">
+                    <tr>
+                        <td>
+                            {!Account.npo02__Formal_Greeting__c}
+                        </td>
+                    </tr>
+                    <tr> 
+                        <td>
+                            <apex:outputText rendered="{!NOT(ISBLANK(Account.BillingStreet))}">
+                                {!Account.BillingStreet}<br />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!OR(NOT(ISBLANK(Account.BillingCity)), NOT(ISBLANK(Account.BillingState)), NOT(ISBLANK(Account.BillingPostalCode)))}">
+                                {!Account.BillingCity}
+                                <apex:outputText rendered="{!NOT(ISBLANK(Account.BillingCity))}">
+                                    {!IF(NOT(ISBLANK(Account.BillingState)), ', ', '')}
+                                </apex:outputText>
+                                {!Account.BillingState}
+                                {!IF(NOT(ISBLANK(Account.BillingPostalCode)), ' ', '')}
+                                {!Account.BillingPostalCode}<br />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </table>
+            </tr>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+        <div style="min-height: 5.7in;">
+            <table style="width: 100%;">
+                 <tr>
+                    <th>Date</th>
+                    <th>Billing</th>
+                    <th>Email</th>                    
+                    <th style="text-align:right;">Paid Amount</th>
+                    <th style="text-align:right;">Due Amount</th>
+                    <th style="text-align:right;">Total Amount</th>
+                  </tr>
+                  <tr>
+                    <td>01-01-2022</td>
+                    <td>000001</td>
+                    <td>example@gmail.com</td>                  
+                    <td style="text-align: right;">$1000</td>
+                    <td style="text-align: right;">$9000</td>
+                    <td style="text-align: right;">$10000</td>
+                  </tr>
+                  <tr>
+                    <td>04-01-2022</td>
+                    <td>000002</td>
+                    <td>example1@gmail.com</td>                   
+                    <td style="text-align: right;">$2500</td>
+                    <td style="text-align: right;">$8500</td>
+                    <td style="text-align: right;">$11000</td>
+                  </tr>
+                  <tr>
+                    <td>11-02-2020</td>
+                    <td>000003</td>
+                    <td>example2@gmail.com</td>                   
+                    <td style="text-align: right;">$4000</td>
+                    <td style="text-align: right;">$8000</td>
+                    <td style="text-align: right;">$12000</td>
+                  </tr>
+                <tr>
+                    <td>17-03-2020</td>
+                    <td>000004</td>
+                    <td>example3@gmail.com</td>                    
+                    <td style="text-align: right;">$4400</td>
+                    <td style="text-align: right;">$6000</td>
+                    <td style="text-align: right;">$10400</td>
+                  </tr>
+                <tr>
+                    <td>09-04-2020</td>
+                    <td>000005</td>
+                    <td>example4@gmail.com</td>                 
+                    <td style="text-align: right;">$7000</td>
+                    <td style="text-align: right;">$2000</td>
+                    <td style="text-align: right;">$9000</td>
+                  </tr>
+                <tr>
+                    <td><b>Total</b></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right;"><b>$19300</b></td>
+                    <td style="text-align: right;"><b>$33500</b></td>
+                    <td style="text-align: right;"><b>$51400</b></td>
+                  </tr>
+             </table>
+         </div>   
+      	 <div class="footer" style="">
+         <hr/>
+            <table align="center" style="width: 100%;">   
+                <tr>
+                    <td colspan="2" style="font-size: 10pt; color: green;">
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; ">
+                            <tr>
+                                <td style="text-align: left;">Asphalt Green</td>                         
+                                <td style="text-align: right;">www.asphaltgreen.org</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>      
+       </div>
+    </body>
+</apex:page>

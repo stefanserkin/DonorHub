@@ -1,0 +1,13 @@
+<apex:page id="GiftReceiptTest" controller="GiftReceiptTestController" renderAs="pdf">
+    <body>
+        <apex:outputPanel rendered="{!NOT(ISNULL(opportunityData))}">
+            <p>Opportunity Name: {!opportunityData.Name}</p>
+            <p>Close Date: {!opportunityData.CloseDate}</p>
+            <p>Amount: {!opportunityData.Amount}</p>
+            <p>Stage: {!opportunityData.StageName}</p>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!ISNULL(opportunityData)}">
+            <p>No data available for this Opportunity.</p>
+        </apex:outputPanel>
+    </body>
+</apex:page>
