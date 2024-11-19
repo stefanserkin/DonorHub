@@ -1,13 +1,103 @@
-<apex:page id="DonorAcknowledgment" controller="" renderAs="pdf">
+<apex:page id="DonorAcknowledgment" controller="DonorAcknowledgmentController" renderAs="pdf">
     <body>
-        <apex:outputPanel rendered="{!NOT(ISNULL(opportunityData))}">
-            <p>Opportunity Name: {!opportunityData.Name}</p>
-            <p>Close Date: {!opportunityData.CloseDate}</p>
-            <p>Amount: {!opportunityData.Amount}</p>
-            <p>Stage: {!opportunityData.StageName}</p>
-        </apex:outputPanel>
-        <apex:outputPanel rendered="{!ISNULL(opportunityData)}">
-            <p>No data available for this Opportunity.</p>
-        </apex:outputPanel>
-    </body>
+        
+        <div class="" style="min-height: 2in;">
+           <!-- SECTION: header w/ company address and logo -->
+           <table class="header-table">
+               <tr>
+                   <td style="width: 75%">
+                       <apex:image width="2.75in" url="{!$Resource.AGLogoLight}"/>
+                   </td>
+                   <td style="">
+                       <table style="width: 2.8in;border: solid 1px black; border-collapse: separate; ">
+                           <tr>
+                               <td style="text-align: center; font-size: 16pt; font-weight: bold; border-bottom: solid 1px black"
+                                   colspan="2">Donation Summary
+                               </td>
+                           </tr>
+
+                           <tr>
+                               <td>&nbsp;&nbsp;Date:</td>
+                               <td style="text-align:right;">
+                                    {!MONTH(TODAY())}/{!DAY(TODAY())}/{!YEAR(TODAY())}&nbsp;&nbsp;
+                               </td>
+                           </tr>
+                           <tr>
+                               <td>&nbsp;&nbsp;Account:</td>
+                               <td style="text-align:right;">{!opportunityData.accountName}&nbsp;&nbsp;</td>
+                           </tr>
+                       </table>
+                   </td>
+               </tr>
+           </table>
+       </div>
+       <table>
+           <tr>
+               <td >Address:</td>
+               <table Style="padding-left: 90px;">
+                   <tr>
+                       <td>
+                           {!opportunityData.formalGreeting}
+                       </td>
+                   </tr>
+                   <tr> 
+                       <td>
+                           <apex:outputText rendered="{!NOT(ISBLANK(opportunityData.billingStreet))}">
+                               {!opportunityData.billingStreet}<br />
+                           </apex:outputText>
+                           <apex:outputText rendered="{!OR(NOT(ISBLANK(opportunityData.billingCity)), NOT(ISBLANK(opportunityData.billingState)), NOT(ISBLANK(opportunityData.billingPostalCode)))}">
+                               {!opportunityData.billingCity}
+                               <apex:outputText rendered="{!NOT(ISBLANK(opportunityData.billingCity))}">
+                                   {!IF(NOT(ISBLANK(opportunityData.billingState)), ', ', '')}
+                               </apex:outputText>
+                               {!opportunityData.billingState}
+                               {!IF(NOT(ISBLANK(opportunityData.billingPostalCode)), ' ', '')}
+                               {!opportunityData.billingPostalCode}<br />
+                           </apex:outputText>
+                       </td>
+                   </tr>
+               </table>
+           </tr>
+       </table>
+       <br/>
+       <br/>
+       <br/>
+       <div style="min-height: 5.7in;">
+            <apex:outputPanel rendered="{!NOT(ISNULL(opportunityData))}">
+                <p>Opportunity Name: {!opportunityData.name}</p>
+                <p>
+                    Close Date:
+                    <apex:outputText value="{0, date, MMMM d',' yyyy}">
+                        <apex:param value="{!opportunityData.closeDate}" /> 
+                    </apex:outputText>
+                </p>
+                
+                <p>
+                    Amount:&nbsp;
+                    <apex:outputText value="{0, number, currency}">
+                        <apex:param value="{!opportunityData.amount}" />
+                    </apex:outputText>
+                </p>
+                <p>Stage: {!opportunityData.stageName}</p>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!ISNULL(opportunityData)}">
+                <p>No data available for this Opportunity.</p>
+            </apex:outputPanel>
+        </div>   
+          <div class="footer" style="">
+        <hr/>
+           <table align="center" style="width: 100%;">   
+               <tr>
+                   <td colspan="2" style="font-size: 10pt; color: green;">
+                       <table style="width: 100%; border-collapse: collapse; border: 1px solid black; ">
+                           <tr>
+                               <td style="text-align: left;">Asphalt Green</td>                         
+                               <td style="text-align: right;">www.asphaltgreen.org</td>
+                           </tr>
+                       </table>
+                   </td>
+               </tr>
+           </table>      
+      </div>
+   </body>
 </apex:page>

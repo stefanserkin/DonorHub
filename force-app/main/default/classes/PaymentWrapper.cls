@@ -21,6 +21,8 @@ public class PaymentWrapper {
     @AuraEnabled
     public String paymentMethod {get;set;}
 
+    public PaymentWrapper() {}
+
     public PaymentWrapper(npe01__OppPayment__c p) {
         this.id = p.Id;
         this.amount = p.npe01__Payment_Amount__c;

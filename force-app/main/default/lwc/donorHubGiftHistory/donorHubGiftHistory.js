@@ -1,11 +1,13 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
-import { loadScript } from 'lightning/platformResourceLoader';
 import { formatDate } from 'c/donorHubUtils';
 import getGiftHistory from '@salesforce/apex/DonorHubController.getGiftHistory';
+import generatePDF from '@salesforce/apex/DonorHubController.generatePDF';
 import USER_ID from '@salesforce/user/Id';
 import CONTACTID_FIELD from '@salesforce/schema/User.ContactId';
 import ACCOUNTID_FIELD from '@salesforce/schema/User.AccountId';
+
+// import { loadScript } from 'lightning/platformResourceLoader';
 // import JSPDF from '@salesforce/resourceUrl/jspdf';
 // import AG_LOGO_IMAGE from '@salesforce/resourceUrl/ag_logo';
 
@@ -103,12 +105,34 @@ export default class DonorHubGiftHistory extends LightningElement {
 
     handleDownloadReceipt(event) {
         const selectedId = event.detail.row.id;
-        let selectedOpp = this.householdGifts.find(item => item.id === selectedId);
-        this.generatePdf(selectedOpp);
+        // let selectedOpp = this.householdGifts.find(item => item.id === selectedId);
+        // console.log(':::: selected opp --> ' + JSON.stringify(selectedOpp));
+        this.downloadPDF(selectedId);
     }
 
-    generatePdf(opportunity) {
-        console.log('::: creating pdf for opportunity --> ' + JSON.stringify(opportunity));
+    async downloadPDF(opportunityId) {
+        try {
+            console.log(':::: download pdf with record id --> ' + opportunityId);
+            const base64Pdf = await generatePDF({ recordId: opportunityId });
+            console.log('::: base64Pdf --> ' + base64Pdf);
+
+            // Create a Blob from the Base64 string
+            const byteCharacters = atob(base64Pdf);
+            const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+            // Create a link element for downloading
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'AsphaltGreenDonorAcknowledgment.pdf';
+            link.click();
+
+            // Clean up the URL object
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
     }
 
     handleDateRangeChange(event) {

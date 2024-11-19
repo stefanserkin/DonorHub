@@ -24,7 +24,7 @@ public with sharing class DonorHubController {
         }
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=false)
     public static String generatePDF(String recordId) {
         return DonorAcknowledgmentService.generatePDF(recordId);
     }

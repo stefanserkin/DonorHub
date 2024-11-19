@@ -15,6 +15,8 @@ public class OppLineItemWrapper {
     @AuraEnabled
     public Decimal totalPrice {get;set;}
 
+    public OppLineItemWrapper() {}
+
     public OppLineItemWrapper(OpportunityLineItem oli) {
         this.id = oli.Id;
         this.name = oli.Name;

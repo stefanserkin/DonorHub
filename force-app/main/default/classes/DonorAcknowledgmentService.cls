@@ -1,16 +1,32 @@
-public with sharing class DonorAcknowledgmentService {
+public without sharing class DonorAcknowledgmentService {
+
+    public class DonorAcknowledgmentServiceException extends Exception {}
+
+    private static final String INVALID_ACCESS_MESSAGE = 'User does not have access to this data';
+    private static final String ACKNOWLEDGMENT_PAGE_PATH = '/apex/DonorAcknowledgment';
     
     public static String generatePDF(String recordId) {
-        System.debug(':::::: generatePDF');
-        PageReference pdfPage = new PageReference('/apex/DonorAcknowledgment');
-        System.debug(':::::: pdfPage --> ' + pdfPage);
+        if (!hasRecordAccess(recordId)) {
+            throw new DonorAcknowledgmentServiceException(INVALID_ACCESS_MESSAGE);
+        }
+
+        PageReference pdfPage = new PageReference(ACKNOWLEDGMENT_PAGE_PATH);
         pdfPage.getParameters().put('id', recordId);
-        System.debug(':::::: id --> ' + recordId);
         Blob pdfBlob = pdfPage.getContentAsPDF();
-        System.debug(':::::: pdfBlob --> ' + pdfBlob);
         String result = EncodingUtil.base64Encode(pdfBlob);
-        System.debug(':::::: result --> ' + result);
         return result;
+    }
+
+    private static Boolean hasRecordAccess(String recordId) {
+        List<User> runningUsersInOpportunityAccount = [
+            SELECT Id 
+              FROM User 
+             WHERE Id = :UserInfo.getUserId()
+               AND AccountId IN (SELECT AccountId FROM Opportunity WHERE Id = :recordId)
+              WITH SYSTEM_MODE 
+             LIMIT 1
+        ];
+        return !runningUsersInOpportunityAccount.isEmpty();
     }
 
 }
